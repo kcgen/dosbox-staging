@@ -6,6 +6,7 @@
 /* ----------------------- Pixel-perfect scaling unit ----------------------- */
 /* This unit uses the Horstmann indentation style.                            */
 
+#include <assert.h>
 #include <float.h>
 #include <math.h>
 #include <string.h>
@@ -35,10 +36,15 @@ int pp_getscale /* calculate integer scales for pixel-perfect magnification */
 		return -1;
 
 	/* enforce aspect ratio priority for 1:n and 1:n pixel proportions: */
-	if( par > 1.0 ) parnorm =       par;
-	else            parnorm = 1.0 / par;
-	/* whether our PAR is an integer ratio: */
-	exactpar = parnorm - floor( parnorm ) < 0.01;
+	const double parnorm = ( par > 1.0 ) ? par : 1.0 / par; /* Ensure PAR is normalized to exceed 1.0  */
+
+	/* if our PAR is an integer ratio, then this will enforce exact aspect ratio */
+	const int exactpar = parnorm - floor( parnorm ) < 0.01;
+	
+	/* maximum x and y scales */
+	const int sxm = (int)floor( ( double )wout / win );
+	const int sym = (int)floor( ( double )hout / hin );
+	assert(sxm && sym);
 
 	sxm = sxc = (int)floor( ( double )wout / win );
 	sym = syc = (int)floor( ( double )hout / hin );
