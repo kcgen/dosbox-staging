@@ -46,8 +46,14 @@ int pp_getscale /* calculate integer scales for pixel-perfect magnification */
 	const int sym = (int)floor( ( double )hout / hin );
 	assert(sxm && sym);
 
-	sxm = sxc = (int)floor( ( double )wout / win );
-	sym = syc = (int)floor( ( double )hout / hin );
+	/* current x and y scales; incrementally adjusted */
+	int sxc = sxm;
+	int syc = sym;
+
+	double parrat = 0;               /* ratio of current PAR and target PAR    */
+	double errpar = 0, errsize = 0, err = 0; /* PAR error, size error, and total error */
+	double errmin = 0;               /* minimal error so far                   */ 
+	double srat = 0;                 /* ratio of maximum size to current       */
 
 	errmin = -1; /* this value marks the first iteration */
 	while( 1 )
